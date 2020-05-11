@@ -335,9 +335,9 @@ Array
 <div id="main-copy">
   
         <h1>Web Cam</h1>
-<img src="../webcam/fixed1.jpg" border="0" width="320" height="240">
+<img src="./mount/webcam/fixed1.jpg" border="0" width="320" height="240">
     <p></p>
-<img src="../webcam/fixed2.jpg" border="0" width="320" height="240">
+<img src="./mount/webcam/fixed2.jpg" border="0" width="320" height="240">
 
 
 
