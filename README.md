@@ -66,3 +66,8 @@ I have been running weather software on my home servers for years.  Since 2004. 
 
 https://stackoverflow.com/questions/45928842/multiple-volumes-to-single-target-directory
 multiple containers share the same mount point on host
+
+Also check out:
+https://github.com/abagayev/docker-bootstrap-collection
+
+
