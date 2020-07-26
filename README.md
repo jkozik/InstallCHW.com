@@ -70,4 +70,12 @@ multiple containers share the same mount point on host
 Also check out:
 https://github.com/abagayev/docker-bootstrap-collection
 
-
+I decided to run the CHW.com application straight on the server, no VMs. Here's the two key commands I ran as user jkozik on the server:
+```
+$ docker run -dit --name weather-data -v /home/weather/public_html:/var/www/html/mount php:7.2-apache
+$ docker run -dit --name chw.com-app -p 8083:80 --volumes-from weather-data jkozik/chw.com
+```
+At this point, it is good to verify that the web server can correctly see the realtime weather data. Run the following test:
+```
+$ curl http://<my ip address>:8083/mount/cumulus/realtime.txt
+```
