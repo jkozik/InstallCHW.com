@@ -39,6 +39,7 @@ echo "Customize Settings-weather.php"
 sed -i  -e  '/SITE\[\x27realtimefile/s/realtime.txt/mount\/cumulus\/realtime.txt/' \
         -e  '/SITE\[\x27graphImageDir/s/images/mount\/cumulus\/images/' \
         -e  '/SITE\[\x27NOAAdir/s/Reports/mount\/cumulus\/Reports/' \
+        -e  '/SITE\[\x27WXtags/s/CUtags/mount\/saratoga\/CUtags/' \
         -e  '/SITE\[\x27conditionsMETAR/s/= \x27.*;/= \x27KDPA\x27;/' \
         Settings-weather.php
 
