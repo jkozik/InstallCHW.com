@@ -79,3 +79,14 @@ At this point, it is good to verify that the web server can correctly see the re
 ```
 $ curl http://<my ip address>:8083/mount/cumulus/realtime.txt
 ```
+# Updates
+The weather scripts update frequently.  I read the updates and every few months I apply the updates. Here's the steps I follow.
+```
+$ docker build --no-cache -t jkozik/chw.comtmp .
+$ docker stop chw.com-app
+$ docker run -dit --name chw.com-apptmp -p 8083:80 --volumes-from wjr-data jkozik/chw.comtmp
+$ docker rm chw.com-app
+$ docker rename chw.com-apptmp chw.com-app
+```
+Note: I rebuild everything with the no-cache option, but I build it to a temp name, so that I can fall back to the old version if the updates don't work. Once the new version works, I delete the old continer and rename the temp version.
+
