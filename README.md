@@ -90,3 +90,20 @@ $ docker rename chw.com-apptmp chw.com-app
 ```
 Note: I rebuild everything with the no-cache option, but I build it to a temp name, so that I can fall back to the old version if the updates don't work. Once the new version works, I delete the old continer and rename the temp version.
 
+# Updating from Sarasota
+The Sarasota Weather scripts are frequestly updated.  I usually pullin the latest updates every several months. For the most part, I do a docker build, with no-cache.  It pulls in everything and rebuilds it.  I then upload the result to docker hub with an updated version tag.  Then I edit the deployment file to pull in the image with the new version number.  It takes several minutes, but usually works.  Check the notes for the update in case some architectural changes are made.  Perhaps the customizeSettings.sh file will need to be tweeked.  Here's a list of the commands I run
+```
+ git clone https://github.com/jkozik/InstallCHW.com.git
+ cd InstallCHW.com/
+ ls
+ docker build -t jkozik/chw.com --no-cache .
+ docker login
+ docker tag jkozik/chw.com jkozik/chw.com:v1.2
+ docker push jkozik/chw.com:v1.2
+ cd ..
+ git clone https://github.com/jkozik/k8sChw.com.git
+ cd k8sChw.com/
+ vi chwcom-deploy.yml   # edit image version number
+ kubectl apply -f chwcom-deploy.yml
+ kubectl get deployments
+ ```
