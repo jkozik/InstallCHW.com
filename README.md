@@ -106,4 +106,8 @@ The Sarasota Weather scripts are frequestly updated.  I usually pullin the lates
  vi chwcom-deploy.yml   # edit image version number
  kubectl apply -f chwcom-deploy.yml
  kubectl get deployments
+ git status
+ git add chwcom-deploy.yml
+ git commit -m "v1.2 general updates"
+ git push
  ```
