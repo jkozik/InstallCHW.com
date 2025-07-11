@@ -1,0 +1,11 @@
+services:
+  chw.com:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: jkozik/chw.com
+    ports:
+      - "8086:80"
+    container_name: chw.com-app
+    volumes:
+      - /mnt/weather_share:/var/www/html/mount
