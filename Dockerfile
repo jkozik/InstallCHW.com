@@ -5,6 +5,9 @@ RUN apt update && apt -y install vim unzip wget libpng-dev zlib1g-dev libonig-de
     docker-php-ext-install gd && \
     apt clean
 
+# Suppress PHP 8.1 deprecation warnings for third-party weather scripts (disabled - fixing issues directly)
+# RUN echo "error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT" >> /usr/local/etc/php/conf.d/custom.ini
+
 WORKDIR /var/www/html
 
 ADD http://saratoga-weather.org/wxtemplates/Base-USA.zip   /var/www/html

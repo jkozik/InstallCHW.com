@@ -9,3 +9,4 @@ services:
     container_name: chw.com-app
     volumes:
       - /mnt/weather_share:/var/www/html/mount
+      #- /home/nfs/weather-stations/chwcom/public_html:/var/www/html/mount
