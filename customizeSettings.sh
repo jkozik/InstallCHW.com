@@ -92,6 +92,7 @@ sed -i '/External Links/, /^<.ul>/ c\
 echo "Customize flyout-menu.xml"
 sed -i '/Nearby METAR Reports/a\
                 <item caption="Steel Guages" link="wxssgauges.php"/>\
+
 ' flyout-menu.xml
 
 
