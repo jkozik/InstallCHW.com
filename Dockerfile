@@ -1,12 +1,10 @@
-FROM php:8.1-apache 
-RUN apt update && apt -y install vim unzip wget libpng-dev zlib1g-dev libonig-dev && \
-    docker-php-ext-install calendar && \
-    docker-php-ext-install mbstring && \
-    docker-php-ext-install gd && \
-    apt clean
-
-# Suppress PHP 8.1 deprecation warnings for third-party weather scripts (disabled - fixing issues directly)
-# RUN echo "error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT" >> /usr/local/etc/php/conf.d/custom.ini
+FROM php:8.2-apache
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        vim unzip wget libpng-dev zlib1g-dev \
+        libjpeg-dev libfreetype6-dev libonig-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install calendar mbstring gd && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
 

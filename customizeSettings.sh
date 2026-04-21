@@ -92,7 +92,6 @@ sed -i '/External Links/, /^<.ul>/ c\
 echo "Customize flyout-menu.xml"
 sed -i '/Nearby METAR Reports/a\
                 <item caption="Steel Guages" link="wxssgauges.php"/>\
-
 ' flyout-menu.xml
 
 
@@ -113,6 +112,27 @@ sed -i '/<?php/a\
 error_reporting(0);
 ' noaafct/noaaDigitalGenerateHtml.php
 
+echo "PHP 8.x compatibility fixes"
+
+# Fix: noaacommontemperature() receives e.g. '54F' (string+unit suffix) -- round() is a TypeError in PHP 8.
+# The end-of-line anchor avoids a false match on the same variable in an inline else clause.
+# Guard: grep skips the sed if upstream has already added a (float) cast.
+grep -q '(float)\$value' noaafct/noaaSettings.php || \
+    sed -i 's/\(\$color[[:space:]]*= \x27red\x27;[[:space:]]*\)$/\1\n\t\$value\t\t\t= (float)\$value;/' \
+        noaafct/noaaSettings.php
+
+# Fix: wsnoaafcttransstr() passes $trans (never initialized, so null) to str_replace() -- deprecated in PHP 8.1.
+# Guard: grep skips if upstream has already added the null-coalescing operator.
+grep -q '\$trans ?? ' noaafct/noaaSettings.php || \
+    sed -i 's/str_replace (\$trans,\x27\x27,/str_replace (\$trans ?? \x27\x27,\x27\x27,/' \
+        noaafct/noaaSettings.php
+
+# Fix: liquidNU stores '-' as a missing-data sentinel; string * float is a TypeError in PHP 8.
+# Guard: grep skips if upstream has already added a (float) cast.
+grep -q '(float)\$arr\[' noaafct/noaaDigitalGenerateHtml.php || \
+    sed -i "s/(1\.0 \* \$arr\['liquidNU'\]) > 0/((float)\$arr['liquidNU']) > 0/" \
+        noaafct/noaaDigitalGenerateHtml.php
+
 echo "Customize davconvp2CW.php"
 sed -i '/graphurl/s/davcon24.txt/mount\/saratoga\/davcon24.txt/'  davconvp2CW.php
 
@@ -129,6 +149,7 @@ sed -i  -e '/wxindex/s/wxindex/index/' flyout-menu.xml
 
 echo "New Radar view in Settings.php"
 sed -i -e '/NWSregion/s/sw/nc/' Settings.php
+
 
 echo "Fix PHP 8.1 deprecation in CU-defs.php"
 sed -i '/windlabel\[ fmod/s/fmod(/(int)fmod(/' CU-defs.php
