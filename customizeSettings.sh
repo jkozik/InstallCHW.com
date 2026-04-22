@@ -133,6 +133,43 @@ grep -q '(float)\$arr\[' noaafct/noaaDigitalGenerateHtml.php || \
     sed -i "s/(1\.0 \* \$arr\['liquidNU'\]) > 0/((float)\$arr['liquidNU']) > 0/" \
         noaafct/noaaDigitalGenerateHtml.php
 
+# Fix: tempAppNU stores '-' as a missing-data sentinel; string * float is a TypeError in PHP 8.
+grep -q '(float)\$arr\[.tempAppNU' noaafct/noaaDigitalGenerateHtml.php || \
+    sed -i "s/1\.0\*\$arr\['tempAppNU'\]/(float)\$arr['tempAppNU']/" \
+        noaafct/noaaDigitalGenerateHtml.php
+
+# Fix: defailtIcon can be a non-numeric string; string * float is a TypeError in PHP 8.
+grep -q '(float)\$arrFcst\[.defailtIcon' noaafct/noaaDigitalGenerateHtml.php || \
+    sed -i "s/1\.0\*\$arrFcst\['defailtIcon'\]/(float)\$arrFcst['defailtIcon']/" \
+        noaafct/noaaDigitalGenerateHtml.php
+
+# Fix: $graphTempMin/$graphTempMax can be set to '-' sentinel if tempAppNU is missing for all periods;
+# floor()/ceil() reject non-numeric strings as a TypeError in PHP 8.
+grep -q 'floor((float)' noaafct/noaaDigitalGenerateHtml.php || \
+    sed -i 's/floor (\$graphTempMin)/floor((float)\$graphTempMin)/' \
+        noaafct/noaaDigitalGenerateHtml.php
+
+grep -q 'ceil((float)' noaafct/noaaDigitalGenerateHtml.php || \
+    sed -i "s/ceil \t(\$graphTempMax)/ceil((float)\$graphTempMax)/" \
+        noaafct/noaaDigitalGenerateHtml.php
+
+# Fix: fmod() returns float; PHP 8 requires (int) cast when used as an array index.
+grep -q '(int)fmod' noaafct/noaaSettings.php || \
+    sed -i 's/\$windlabel\[ fmod(/\$windlabel[ (int)fmod(/' \
+        noaafct/noaaSettings.php
+
+grep -q '(int)fmod' noaafct/noaaLoadJson.php || \
+    sed -i 's/\$windlabel\[ fmod(/\$windlabel[ (int)fmod(/' \
+        noaafct/noaaLoadJson.php
+
+# Fix: NWS API no longer always returns 'updated' key; null passed to strtotime()/date() deprecated in PHP 8.1.
+grep -q '\$string !== null' noaafct/noaaLoadJson.php || {
+    sed -i "s/\$array\['updated'\];/\$array['updated'] ?? null;/" noaafct/noaaLoadJson.php
+    sed -i "s/\$time\t\t= strtotime(\$string);/\$time\t\t= \$string !== null ? strtotime(\$string) : false;/" noaafct/noaaLoadJson.php
+    sed -i "s/= date('c', strtotime(\$string ) );/= \$string !== null ? date('c', strtotime(\$string)) : '';/" noaafct/noaaLoadJson.php
+    sed -i "s/date( \$dateLongFormat, \$time).' '.date(\$timeFormat, \$time)/\$time !== false ? date(\$dateLongFormat, \$time).' '.date(\$timeFormat, \$time) : ''/" noaafct/noaaLoadJson.php
+}
+
 echo "Customize davconvp2CW.php"
 sed -i '/graphurl/s/davcon24.txt/mount\/saratoga\/davcon24.txt/'  davconvp2CW.php
 
@@ -149,10 +186,6 @@ sed -i  -e '/wxindex/s/wxindex/index/' flyout-menu.xml
 
 echo "New Radar view in Settings.php"
 sed -i -e '/NWSregion/s/sw/nc/' Settings.php
-
-
-echo "Fix PHP 8.1 deprecation in CU-defs.php"
-sed -i '/windlabel\[ fmod/s/fmod(/(int)fmod(/' CU-defs.php
 
 
 
