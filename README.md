@@ -1,4 +1,7 @@
 # InstallCHW.com
+
+> **Retired November 2026.** CamptonHillsWeather.com has been shut down. The station's historical data (2010–2026) is archived in [`history/`](history/README.md).
+
 CamptonHillsWeather.com is made from the scripts at Saratoga Weather. With this repository, I hope to automate putting these scripts into a docker container, making it easier for me to keep up to date and move as my server environment evolves.
 First, setup a data storage container that wraps the realtime weather data files (eg realtime.txt) into something that can be shared across multiple containers.  So run below, but only once.  If you are running multiple websites from the same weather data, this container is shared.  So optionally run below:
 ```
